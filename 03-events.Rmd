@@ -1,0 +1,61 @@
+---
+title: "03-events"
+author: "Amanda Pennino"
+date: "2024-05-02"
+output: html_document
+---
+
+```{r}
+
+
+
+```
+
+
+
+```{r}
+# library(sf)
+# library(terra)
+# 
+# soils <- rast("rasters/hpu_hbef-2024.tif")
+# ws <- read_sf("vectors/hbef_wsheds.shp")
+# rg <- read_sf("vectors/hbef_raingage.shp")
+# 
+# GAGE <- as.numeric(unlist(rg$GAGE_NUM))
+# 
+# plot(soils)
+# plot(ws, add = TRUE)
+# plot(rg, add = TRUE, pch=20)
+# text(rg, labels = GAGE, pos = 4, offset = 0.7)
+# 
+# Why do labels not work?
+
+############## DOWNLOAD THE LATEST PRECIP DATASET
+
+
+# Data set title: Hubbard Brook Experimental Forest: 15-minute Precipitation Measurements, 2011 - present.
+# Grab code and run in console
+# https://portal.edirepository.org/nis/codeGeneration?packageId=knb-lter-hbr.277.8&statisticalFileType=r
+
+
+
+# rg_dates <- dt11
+# RG1 <- dt1
+# RG4 <- dt3
+# RG23 <- dt10
+
+# combine and read out
+# write.csv(rg_dates, "rg_dates.csv")
+# write.csv(RG1, "timeseries/RG1.csv")
+# write.csv(RG4, "timeseries/RG4.csv")
+# write.csv(RG23, "timeseries/RG23.csv")
+
+```
+
+```{r}
+
+
+```
+
+
+
