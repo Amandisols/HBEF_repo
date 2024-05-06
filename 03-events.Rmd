@@ -5,15 +5,25 @@ date: "2024-05-02"
 output: html_document
 ---
 
+
+#Input
+# * Rain Gauge precipitation (15 min)
+
+#Output
+# * Delineated storm events
+
+
 ```{r}
 
-
+library(tidyverse)
 
 ```
 
 
 
 ```{r}
+
+##############   RAIN GAGE LOCATIONS   ##############
 # library(sf)
 # library(terra)
 # 
@@ -26,36 +36,119 @@ output: html_document
 # plot(soils)
 # plot(ws, add = TRUE)
 # plot(rg, add = TRUE, pch=20)
-# text(rg, labels = GAGE, pos = 4, offset = 0.7)
-# 
-# Why do labels not work?
+# text(rg, labels = GAGE, pos = 4, offset = 0.7) #why do labels not work???
 
-############## DOWNLOAD THE LATEST PRECIP DATASET
+
+##############   DOWNLOAD THE LATEST PRECIP DATASET   ##############
 
 
 # Data set title: Hubbard Brook Experimental Forest: 15-minute Precipitation Measurements, 2011 - present.
 # Grab code and run in console
-# https://portal.edirepository.org/nis/codeGeneration?packageId=knb-lter-hbr.277.8&statisticalFileType=r
+# # https://portal.edirepository.org/nis/codeGeneration?packageId=knb-lter-hbr.277.8&statisticalFileType=r
+
+#library(lubridate)
+tmpDateFormat<-"%Y-%m-%d %H:%M:%S"
+dt1$DateTime <-as.POSIXct(dt1$DateTime,format=tmpDateFormat)
+dt2$DateTime <-as.POSIXct(dt2$DateTime,format=tmpDateFormat)
+dt3$DateTime <-as.POSIXct(dt3$DateTime,format=tmpDateFormat)
+dt4$DateTime <-as.POSIXct(dt4$DateTime,format=tmpDateFormat)
+dt5$DateTime <-as.POSIXct(dt5$DateTime,format=tmpDateFormat)
+dt6$DateTime <-as.POSIXct(dt6$DateTime,format=tmpDateFormat)
+dt7$DateTime <-as.POSIXct(dt7$DateTime,format=tmpDateFormat)
+dt8$DateTime <-as.POSIXct(dt8$DateTime,format=tmpDateFormat)
+dt9$DateTime <-as.POSIXct(dt9$DateTime,format=tmpDateFormat)
+dt10$DateTime <-as.POSIXct(dt10$DateTime,format=tmpDateFormat)
+
+# read out
+# write.csv(dt1, "timeseries/RG1.csv")
+# write.csv(dt2, "timeseries/RG2.csv")
+# write.csv(dt3, "timeseries/RG4.csv")
+# write.csv(dt4, "timeseries/RG6.csv")
+# write.csv(dt5, "timeseries/RG9.csv")
+# write.csv(dt6, "timeseries/RG14.csv")
+# write.csv(dt7, "timeseries/RG17.csv")
+# write.csv(dt8, "timeseries/RG19.csv")
+# write.csv(dt9, "timeseries/RG22.csv")
+# write.csv(dt10, "timeseries/RG23.csv")
+# write.csv(dt11, "rg_dates.csv")
+
+#Take out flagged rows
+
+dt1 <- dt1 %>% filter(flag %in% c("0", NA))
+dt2 <- dt2 %>% filter(flag %in% c("0", NA))
+dt3 <- dt3 %>% filter(flag %in% c("0", NA))
+dt4 <- dt4 %>% filter(flag %in% c("0", NA))
+dt5 <- dt5 %>% filter(flag %in% c("0", NA))
+dt6 <- dt6 %>% filter(flag %in% c("0", NA))
+dt7 <- dt7 %>% filter(flag %in% c("0", NA))
+dt8 <- dt8 %>% filter(flag %in% c("0", NA))
+dt9 <- dt9 %>% filter(flag %in% c("0", NA))
+dt10 <- dt10 %>% filter(flag %in% c("0", NA))
 
 
+# Merge all rain gauges and take column-wise median
+medians <- data.frame(DateTime = seq(ymd_hm('2011-06-21 13:15'), ymd_hm('2024-01-01 13:15'), by = '15 mins'))
 
-# rg_dates <- dt11
-# RG1 <- dt1
-# RG4 <- dt3
-# RG23 <- dt10
+medians <- left_join(medians, dt1, by= "DateTime") %>% rename("RG1" = "precip") %>% select(DateTime, RG1)
+medians <- left_join(medians, dt2, by= "DateTime") %>% rename("RG2" = "precip") %>% select(DateTime, RG1, RG2)
+medians <- left_join(medians, dt3, by= "DateTime") %>% rename("RG4" = "precip") %>% select(DateTime, RG1, RG2, RG4)
+medians <- left_join(medians, dt4, by= "DateTime") %>% rename("RG6" = "precip") %>% select(DateTime, RG1, RG2, RG4, RG6)
+medians <- left_join(medians, dt5, by= "DateTime") %>% rename("RG9" = "precip") %>% select(DateTime, RG1, RG2, RG4, RG6, RG9)
+medians <- left_join(medians, dt6, by= "DateTime") %>% rename("RG14" = "precip") %>% select(DateTime, RG1, RG2, RG4, RG6, RG9, RG14)
+medians <- left_join(medians, dt7, by= "DateTime") %>% rename("RG17" = "precip") %>% select(DateTime, RG1, RG2, RG4, RG6, RG9, RG14, RG17)
+medians <- left_join(medians, dt8, by= "DateTime") %>% rename("RG19" = "precip") %>% select(DateTime, RG1, RG2, RG4, RG6, RG9, RG14, RG17, RG19)
+medians <- left_join(medians, dt9, by= "DateTime") %>% rename("RG22" = "precip") %>% select(DateTime, RG1, RG2, RG4, RG6, RG9, RG14, RG17, RG19, RG22)
+medians <- left_join(medians, dt10, by= "DateTime") %>% rename("RG23" = "precip") %>% select(DateTime, RG1, RG2, RG4, RG6, RG9, RG14, RG17, RG19, RG22, RG23)
 
-# combine and read out
-# write.csv(rg_dates, "rg_dates.csv")
-# write.csv(RG1, "timeseries/RG1.csv")
-# write.csv(RG4, "timeseries/RG4.csv")
-# write.csv(RG23, "timeseries/RG23.csv")
+medians$med <- apply(medians[2:11],1,function(v) median(as.numeric(v),na.rm = T))
+
+test <- medians %>%
+  filter(DateTime == "2015-07-20 00:45:00")
+
+write.csv(medians, "timeseries/medians.csv")
+
+
+#something going on with the timezone??
+
 
 ```
 
+#TESTING
+Identify events
 ```{r}
 
 
+dates <- read_csv("rg_dates.csv")
+
+#flag: 0-directly measured, 1-gap-filled from all other stations (median value) for same time period
+precip <- read_csv("timeseries/RG4.csv") #within watershed 3
+
+precip <- precip %>% 
+  select(DateTime, precip)
+
+
+
+test <- as.data.frame(rexp(10000))
+test$`rexp(10000)` <- test[order(test$`rexp(10000)`),]
+test$time <- seq(1,1000, by = 1)
+
+test <- test %>% filter(`rexp(10000)`>3)
+
+plot(test$time, test$`rexp(10000)`, type = "l")
+
+test %>%
+  ggplot(aes(x= time, y = `rexp(10000)`))+
+  geom_line(color = "green", size =2) +
+  theme_classic() +
+  labs(title = "Vibes", x = "Time on Friday", y = "Desire to have a margarita") +
+  labs(text = element_text(size = 20))+
+  theme(axis.text.x=element_blank(), 
+      axis.ticks.x=element_blank(), 
+      axis.text.y=element_blank(), 
+      axis.ticks.y=element_blank()) 
+
 ```
+
 
 
 
