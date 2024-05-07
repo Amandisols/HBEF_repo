@@ -59,6 +59,8 @@ dt8$DateTime <-as.POSIXct(dt8$DateTime,format=tmpDateFormat)
 dt9$DateTime <-as.POSIXct(dt9$DateTime,format=tmpDateFormat)
 dt10$DateTime <-as.POSIXct(dt10$DateTime,format=tmpDateFormat)
 
+?as.POSIXct
+
 # read out
 # write.csv(dt1, "timeseries/RG1.csv")
 # write.csv(dt2, "timeseries/RG2.csv")
@@ -108,7 +110,7 @@ test <- medians %>%
 write.csv(medians, "timeseries/medians.csv")
 
 
-#something going on with the timezone??
+#something going on with the timezones??
 
 
 ```
@@ -146,6 +148,11 @@ test %>%
       axis.ticks.x=element_blank(), 
       axis.text.y=element_blank(), 
       axis.ticks.y=element_blank()) 
+
+
+
+
+
 
 ```
 
