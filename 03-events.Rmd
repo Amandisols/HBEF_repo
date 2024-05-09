@@ -16,8 +16,68 @@ output: html_document
 ```{r}
 
 library(tidyverse)
+library(lubridate)
 
 ```
+
+##############   CREATING PRECIP DATASET   ##############
+
+#DOWNLOAD THE LATEST PRECIP DATASET
+- Data set title: Hubbard Brook Experimental Forest: 15-minute Precipitation Measurements, 2011 - present.
+- Grab code and run in console: https://portal.edirepository.org/nis/codeGeneration?packageId=knb-lter-hbr.277.8&statisticalFileType=r
+- Combine all rain gauges into list and convert DateTime to POSIXct format
+
+#REMOVE FLAGGED (FILLED) VALUES
+- Anything with "1" = filled, not measured values
+- Add in missing dates
+
+#CALULCULATE MEDIAN VALUES FOR ALL 
+
+
+#NOTES
+- Data is in millimeters
+- Gauge spelled as "gage"
+
+```{r}
+
+datesRG <- read_csv("~/projects/DSS/HBEF/HBEF_repo/rg_dates.csv")
+
+# read in files
+files = list.files(
+  path = "timeseries/",
+  pattern = "\\csv$",
+  ignore.case = T,
+  full.names = T
+)
+
+
+# read in rain gauge timeseries and combine into list
+listRGs = lapply(files, read.csv)
+
+
+# convert to POSIX format, set flagged precip values to NA
+listRGs <- lapply(listRGs, function(x){
+  x$DateTime = as.POSIXct(x$DateTime, format = "%Y-%m-%d %H:%M:%S", tz="GMT")
+  x$precip[x$flag == 1] <- NA
+  return(x)
+})
+
+
+# precip column names --> rain gauge name
+for(i in 1:length(listRGs)) {
+  colnames(listRGs[[i]]) <- c("index", "rainGage", "DateTime", listRGs[[i]]$rainGage[1], "flag")
+}
+
+# merge dataframes
+# remove unwanted columns before combing
+listRGs <- lapply(listRGs, function(x) { x[c("index", "rainGage", "flag")] <- NULL; x })
+
+
+
+
+
+```
+
 
 
 
