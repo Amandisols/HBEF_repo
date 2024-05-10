@@ -20,12 +20,13 @@ library(lubridate)
 
 ```
 
-##############   CREATING PRECIP DATASET   ##############
+##############   CREATING PRECIP DATASETS   ##############
 
 #DOWNLOAD THE LATEST PRECIP DATASET
 - Data set title: Hubbard Brook Experimental Forest: 15-minute Precipitation Measurements, 2011 - present.
 - Grab code and run in console: https://portal.edirepository.org/nis/codeGeneration?packageId=knb-lter-hbr.277.8&statisticalFileType=r
 - Combine all rain gauges into list and convert DateTime to POSIXct format
+- Last download: 05/10/2024
 
 #REMOVE FLAGGED (FILLED) VALUES
 - Anything with "1" = filled, not measured values
@@ -117,18 +118,29 @@ write.csv(allRGs_noflag, "timeseries/precip_allRGs_noflag.csv")
 
 ```
 
-#TESTING
-Identify events
+
+##############   CREATING TARGET DATASET   ##############
 ```{r}
 
 
-dates <- read_csv("rg_dates.csv")
-
 #flag: 0-directly measured, 1-gap-filled from all other stations (median value) for same time period
-precip <- read_csv("timeseries/RG4.csv") #within watershed 3
+datesRG <- read_csv("~/projects/DSS/HBEF/HBEF_repo/rg_dates.csv")
 
-precip <- precip %>% 
-  select(DateTime, precip)
+medians <- read_csv("timeseries/precip_allRGs_noflag.csv") # median precip vals across watershed 3
+
+RG4 <- read_csv("timeseries/edi/RG4.csv")[,-c(1,2)] #within ws 3
+
+# time before RG4 logged
+m <- medians %>%
+  filter(DateTime < "2016-11-10 16:00:00") %>%
+  select('DateTime', 'median_p') %>%
+  rename(precip = 'median_p') %>%
+  mutate(flag = 1)
+
+RG4 <- rbind(m, RG4)
+
+
+plot(RG4$DateTime, RG4$precip, type = "l")
 
 
 
